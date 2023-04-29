@@ -61,9 +61,20 @@ class Graph:
         return self.__str__()
     
     def _wrong_index(self, index: int) -> bool:
+        """
+        Returns True if desired index is invalid
+        """
         if index < 0 or index >= len(self._vertices) or type(index) != int:
             return True
         return False
+    
+    def _at(self, index: int) -> Vertex:
+        """
+        Points to vertex at location `index`
+        """
+        if self._wrong_index(index):
+            return None
+        return self._vertices[index]
     
     def set_connection(self, from_vertex: int, to_vertex: int, value: float = 1, bidirectional: bool = False):
         """
@@ -128,6 +139,12 @@ class Graph:
             return
         self._vertices[index].move_vertex(new_x, new_y)
 
+    def reset_vertex_states(self):
+        """
+        Resets state of all vertices to 0
+        """
+        for v in self._vertices:
+            v._state = 0
 
     def load_file(self, filename: str):
         """
