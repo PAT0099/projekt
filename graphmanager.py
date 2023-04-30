@@ -20,10 +20,14 @@ class Graph:
             self._loc_y: float = 0
 
         def __str__(self) -> str:
-            return f"state {self._state}, {self._neighbors.__str__()}"
+            return f"{self._state}, {self._neighbors.__str__()}"
         
         def __repr__(self) -> str:
             return self.__str__()
+        
+        @property
+        def _neighbor_count(self):
+            return len(self._neighbors)
         
         def move_vertex(self, x: float, y: float):
             """
@@ -60,7 +64,11 @@ class Graph:
     def __repr__(self) -> str:
         return self.__str__()
     
-    def _wrong_index(self, index: int) -> bool:
+    @property
+    def _vertex_count(self):
+        return len(self._vertices)
+
+    def wrong_index(self, index: int) -> bool:
         """
         Returns True if desired index is invalid
         """
@@ -68,11 +76,11 @@ class Graph:
             return True
         return False
     
-    def _at(self, index: int) -> Vertex:
+    def at(self, index: int) -> Vertex:
         """
         Points to vertex at location `index`
         """
-        if self._wrong_index(index):
+        if self.wrong_index(index):
             return None
         return self._vertices[index]
     
@@ -80,10 +88,10 @@ class Graph:
         """
         Set an edge between two vertices
         """
-        if self._wrong_index(from_vertex):
+        if self.wrong_index(from_vertex):
             print("Invalid FROM index")
             return
-        elif self._wrong_index(to_vertex):
+        elif self.wrong_index(to_vertex):
             print("Invalid TO vertex")
             return
         
@@ -95,17 +103,16 @@ class Graph:
         """
         Remove an edge between two vertices
         """
-        if self._wrong_index(from_vertex):
+        if self.wrong_index(from_vertex):
             print("Invalid FROM index")
             return
-        elif self._wrong_index(to_vertex):
+        elif self.wrong_index(to_vertex):
             print("Invalid TO vertex")
             return
         
         self._vertices[from_vertex].remove_edge(to_vertex)
         if bidirectional:
             self._vertices[to_vertex].remove_edge(from_vertex)
-
 
     def add_vertex(self, loc_x: float = 0, loc_y: float = 0):
         """
@@ -119,7 +126,7 @@ class Graph:
         """
         Remove a vertex
         """
-        if self._wrong_index(index):
+        if self.wrong_index(index):
             print("Invalid index")
             return
         
@@ -129,31 +136,80 @@ class Graph:
 
         self._vertices.pop(index)
 
-
     def move_vertex(self, index: int, new_x: float = 0, new_y: float = 0):
         """
         Move vertex for graphical output
         """
-        if self._wrong_index(index):
+        if self.wrong_index(index):
             print("Invalid index")
             return
         self._vertices[index].move_vertex(new_x, new_y)
 
-    def reset_vertex_states(self):
+    def reset_vertex_states(self, state = 0):
         """
-        Resets state of all vertices to 0
+        Resets state of all vertices
         """
         for v in self._vertices:
-            v._state = 0
+            v._state = state
+
+    def reset_graph(self):
+        """
+        Removes all vertices
+        """
+        self._vertices = []
 
     def load_file(self, filename: str):
         """
         Load graph from a file given by parameter `filename`
         """
-        pass
-
+        lines = ""
+        try:
+            with open(filename, 'r') as f:
+                lines = f.readlines()
+        except FileNotFoundError:
+            print("File not found")
+        finally:
+            datamode = 0
+            for l in lines:
+                if len(l) == 1:
+                    continue
+                elif l[0] == '#':
+                    continue
+                elif l[0] == 'v':
+                    datamode = 1 #reading vertices
+                    continue
+                elif l[0] == 'e':
+                    datamode = 2 #reading edges
+                    continue
+                
+                if datamode == 1:
+                    vert = l.strip().split(' ')
+                    if len(vert) != 2:
+                        print("Invalid input")
+                        self.reset_graph()
+                        return
+                    self.add_vertex(float(vert[0]), float(vert[1]))
+                    
+                elif datamode == 2:
+                    edge = l.strip().split(' ')
+                    if len(edge) != 3:
+                        print("Invalid input")
+                        self.reset_graph()
+                        return
+                    self.set_connection(int(edge[0]), int(edge[1]), float(edge[2]))
+           
     def save_file(self, filename: str):
         """
         Save graph into a file given by parameter `filename`
         """
-        pass
+        try:
+            with open(filename, 'w') as f:
+                f.write("# File generated by GraphManager\n\nv\n")
+                for v in self._vertices:
+                    f.write(f"{v._loc_x} {v._loc_y}\n")
+                f.write("\ne\n")
+                for v in range(self._vertex_count):
+                    for e in self.at(v)._neighbors.keys():
+                        f.write(f"{v} {e} {self.at(v)._neighbors[e]}\n")
+        except Exception:
+            print("Something went wrong")
