@@ -3,10 +3,10 @@
 #### Projekt do VVP
 
 **Fajny TODO list:**
-- načítání grafu ze souboru
+- DONE - načítání grafu ze souboru
     - možná interaktivně jestli to půjde idk
-- ukládání grafů do souboru
-    - možná export do svg, idk
+- DONE - ukládání grafů do souboru
+    - DONE - možná export do svg, idk
 - nějaké základní algoritmy
     - DFS
     - BFS
