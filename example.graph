@@ -2,14 +2,14 @@
 # Lines with the '#' symbol at the beginning are considered comments
 
 # Numbers after 'v' denote locations of all vertices
-# All these values should be in the range [0,1]
+# All these values should be in range [0,1]
 v
 0.1 0.1
 0.5 0.2
 0.3 0.5
 0.8 0.8
 
-# Numbers after 'e' denote weigths of edges
+# Numbers after 'e' denote weights of edges
 # The values for edges are in order FROM TO WEIGHT
 e
 0 1 8
