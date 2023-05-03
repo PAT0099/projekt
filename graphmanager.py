@@ -231,21 +231,13 @@ class Graph:
                 # arrow marker, yoinked from https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker
                 f.write(f'\n<defs>\n\t<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" fill="black" stroke="none">\n\t\t<path d="M 0 0 L 10 5 L 0 10 z" />\n\t</marker>\n</defs>')
                 # text (doesn't align vertically for some reason)
-                if show_weights:
+                if show_weights or show_vertex_ids:
                     f.write(f'\n<style>\n\t.num {{\n\t\tfont: {vertex_size}px sans-serif;\n\t\tfill: black;\n\t\tstroke: white;\n\t\tstroke-width: {vertex_size/5};\n\t\tpaint-order: stroke;\n\t\ttext-anchor: middle;\n\t\tdominant-baseline: middle;\n\t}}\n</style>')
                 f.write(f'\n<rect width="100%" height="100%" stroke="none" />')
 
-                # draw vertices
-                f.write("\n\n<!-- Vertices -->\n<g>\n")
-                for v in range(self._vertex_count):
-                    f.write(f'\t<circle cx="{self.at(v)._loc_x * width}" cy="{self.at(v)._loc_y * height}" r="{vertex_size}" />\n')
-                    if show_vertex_ids:
-                        #WHY DOESN'T TEXT CENTER
-                        f.write(f'\t<text x="{self.at(v)._loc_x * width}" y="{self.at(v)._loc_y * height + vertex_size / 2}" class="num">{v}</text>\n')
-                
                 # draw edges
                 weight_data = []
-                f.write("</g>\n\n<!-- Edges -->\n<g>\n")
+                f.write("\n\n<!-- Edges -->\n<g>\n")
                 for v1 in range(self._vertex_count):
                     for v2 in self.at(v1)._neighbors.keys():
                         # get direction, needed for numbers and offset
@@ -269,7 +261,7 @@ class Graph:
                                 y1 = v1y + dy * vertex_size
                                 x2 = v2x - dx * vertex_size
                                 y2 = v2y - dy * vertex_size
-                                f.write(f'\t<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" marker-start="url(#arrow)" marker-end="url(#arrow)" />\n')
+                                f.write(f'\t<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" />\n')
                                 if show_weights:
                                     weight_data.append(((x1+x2)/2, (y1+y2)/2, self.at(v1)._neighbors[v2]))
 
@@ -303,6 +295,14 @@ class Graph:
                     for w in weight_data:
                         f.write(f'\t<text x="{w[0]}" y="{w[1]}" class="num">{w[2]:g}</text>\n')
 
+                # draw vertices
+                f.write("</g>\n\n<!-- Vertices -->\n<g>\n")
+                for v in range(self._vertex_count):
+                    f.write(f'\t<circle cx="{self.at(v)._loc_x * width}" cy="{self.at(v)._loc_y * height}" r="{vertex_size}" />\n')
+                    if show_vertex_ids:
+                        #WHY DOESN'T TEXT CENTER
+                        f.write(f'\t<text x="{self.at(v)._loc_x * width}" y="{self.at(v)._loc_y * height + vertex_size / 2}" class="num">{v}</text>\n')
+                
                 f.write("</g>\n</svg>")
         except Exception:
             print("Something went wrong")
