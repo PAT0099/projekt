@@ -8,7 +8,7 @@
 - DONE - ukládání grafů do souboru
     - DONE - možná export do svg, idk
 - nějaké základní algoritmy
-    - DFS
-    - BFS
+    - DONE - DFS
+    - DONE - BFS
     - dijkstra
     - minimální kostra grafu

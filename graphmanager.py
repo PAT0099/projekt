@@ -171,6 +171,7 @@ class Graph:
         except FileNotFoundError:
             print("File not found")
         finally:
+            self.reset_graph()
             datamode = 0
             for l in lines:
                 if len(l) == 1:
