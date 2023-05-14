@@ -2,16 +2,20 @@
 
 class Graph:
     """
-    Main class that holds a graph and all its vertices
+    Main class that holds a graph and all its vertices.
     """
 
     class Vertex:
         """
-        Vertex class, holds information about a single vertex
+        Vertex class, holds information about a single vertex.
+
+        `_neighbors` is a dictionary denoting vertex' neighbors, and the edge weights to them\n
+        `_state` is the vertex' state, useful for algorithms\n
+        `_loc_x` and `_loc_y` denote vertex' location, should be in interval [0, 1]
         """
         def __init__(self):
             """
-            Initialize vertex
+            Initialize vertex.
             """
             # dictionary of form neighbor: edge_weight
             self._neighbors: dict = {}
@@ -33,27 +37,27 @@ class Graph:
         
         def move_vertex(self, x: float, y: float):
             """
-            Change location of vertex
+            Change location of vertex.
             """
             self._loc_x = x
             self._loc_y = y
         
         def set_edge(self, to_vertex: int, weight: float = 1):
             """
-            Change value of edge going to another vertex
+            Change value of edge going to another vertex.
             """
             self._neighbors[to_vertex] = weight
 
         def remove_edge(self, to_vertex: int):
             """
-            Remove an edge going to another vertex
+            Remove an edge going to another vertex.
             """
             if to_vertex in self._neighbors:
                 self._neighbors.pop(to_vertex)
 
     def __init__(self):
         """
-        Initialize graph
+        Initialize graph.
         """
         self._vertices: list(Graph.Vertex) = []
 
@@ -72,7 +76,7 @@ class Graph:
 
     def wrong_index(self, index: int) -> bool:
         """
-        Returns True if desired index is invalid
+        Return `True` if desired index is invalid.
         """
         if index < 0 or index >= len(self._vertices) or type(index) != int:
             return True
@@ -80,15 +84,16 @@ class Graph:
     
     def at(self, index: int) -> Vertex:
         """
-        Points to vertex at location `index`
+        Return vertex at location `index` or `None` if given index is invalid.
         """
         if self.wrong_index(index):
             return None
         return self._vertices[index]
     
-    def set_connection(self, from_vertex: int, to_vertex: int, value: float = 1, bidirectional: bool = False):
+    def set_connection(self, from_vertex: int, to_vertex: int, value: float = 1, bidirectional: bool = True):
         """
-        Set an edge between two vertices
+        Set an edge of weight `value` going from vertex given by index `from_vertex` to vertex given by `to_vertex`.
+        The edge is bidirectional by default, set parameter `bidirectional` to `False` to create an oriented edge.
         """
         if self.wrong_index(from_vertex):
             print("Invalid FROM index")
@@ -101,9 +106,10 @@ class Graph:
         if bidirectional:
             self._vertices[to_vertex].set_edge(from_vertex, value)
 
-    def remove_connection(self, from_vertex: int, to_vertex: int, bidirectional: bool = False):
+    def remove_connection(self, from_vertex: int, to_vertex: int, bidirectional: bool = True):
         """
-        Remove an edge between two vertices
+        Remove an edge between two vertices given by indices `from_vertex` and `to_vertex`.
+        Edges are removed in both directions, unless the parameter `bidirectional` is set to `False`.
         """
         if self.wrong_index(from_vertex):
             print("Invalid FROM index")
@@ -118,7 +124,7 @@ class Graph:
 
     def add_vertex(self, loc_x: float = 0, loc_y: float = 0):
         """
-        Add a single vertex
+        Add a single new vertex at location given by `loc_x` and `loc_y`.
         """
         v = Graph.Vertex()
         v.move_vertex(loc_x, loc_y)
@@ -126,7 +132,7 @@ class Graph:
 
     def remove_vertex(self, index: int):
         """
-        Remove a vertex
+        Remove a single vertex given by `index`.
         """
         if self.wrong_index(index):
             print("Invalid index")
@@ -140,7 +146,8 @@ class Graph:
 
     def move_vertex(self, index: int, new_x: float = 0, new_y: float = 0):
         """
-        Move vertex for graphical output
+        Move vertex at `index` to a new location given by `new_x` and `new_y`.
+        This is only important for graphical output.
         """
         if self.wrong_index(index):
             print("Invalid index")
@@ -149,7 +156,7 @@ class Graph:
 
     def reset_vertex_states(self, state = 0):
         """
-        Resets state of all vertices
+        Reset state of all vertices to `state`.
         """
         for v in self._vertices:
             v._state = state
@@ -162,7 +169,7 @@ class Graph:
 
     def load_file(self, filename: str):
         """
-        Load graph from a file given by parameter `filename`
+        Load graph from a file given by parameter `filename`.
         """
         lines = ""
         try:
@@ -199,11 +206,11 @@ class Graph:
                         print("Invalid input")
                         self.reset_graph()
                         return
-                    self.set_connection(int(edge[0]), int(edge[1]), float(edge[2]))
+                    self.set_connection(int(edge[0]), int(edge[1]), float(edge[2]), False)
            
     def save_file(self, filename: str):
         """
-        Save graph into a file given by parameter `filename`
+        Save graph into a file given by parameter `filename`.
         """
         try:
             with open(filename, 'w') as f:
@@ -220,7 +227,7 @@ class Graph:
     #spaghetti mess, gets worse the longer you look at it
     def export_svg(self, filename: str, width: int = 500, height: int = 500, vertex_size: float = 25, show_weights: bool = False, show_vertex_ids: bool = False):
         """
-        Export graph as svg into a file given by parameter `filename`
+        Export graph as svg into a file given by parameter `filename`.
         """
         if width <= 0 or height <= 0:
             print("Width and height should be positive values")
@@ -228,6 +235,7 @@ class Graph:
         
         try:
             with open(filename, 'w') as f:
+                # write some sort of a header
                 f.write(f'<!-- File generated by GraphManager -->\n<svg width="{width}" height="{height}" stroke-width="{vertex_size/10}" stroke="black" fill="white" version="1.1">')
                 # arrow marker, yoinked from https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker
                 f.write(f'\n<defs>\n\t<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" fill="black" stroke="none">\n\t\t<path d="M 0 0 L 10 5 L 0 10 z" />\n\t</marker>\n</defs>')
