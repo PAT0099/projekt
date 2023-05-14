@@ -2,11 +2,11 @@ from graphmanager import Graph
 
 def bfs(graph: Graph, v_start: int, v_end: int) -> tuple:
     """
-    Searches `graph` for a path between vertices given by indices `v_start` and `v_end` using breadth-first search.
-    Returns a tuple consisting of a bool, float and list.
+    Searches `graph` for a path between vertices given by indices `v_start` and `v_end` using breadth-first search.\n
+    Returns a tuple consisting of a bool, float and list.\n
     The bool is `True` if there exists a path between given vertices.
     The float is the length of found path.
-    The list is the list of vertex indices.
+    The list shows the order of vertices in found path
     """
     if graph.wrong_index(v_start) or graph.wrong_index(v_end):
         print("Invalid index")
@@ -37,11 +37,11 @@ def bfs(graph: Graph, v_start: int, v_end: int) -> tuple:
 
 def dfs(graph: Graph, v_start: int, v_end: int) -> tuple:
     """
-    Searches `graph` for a path between vertices given by indices `v_start` and `v_end` using depth-first search.
-    Returns a tuple consisting of a bool, float and list.
+    Searches `graph` for a path between vertices given by indices `v_start` and `v_end` using depth-first search.\n
+    Returns a tuple consisting of a bool, float and list.\n
     The bool is `True` if there exists a path between given vertices.
     The float is the length of found path.
-    The list is the list of vertex indices.
+    The list shows the order of vertices in found path.
     """
     if graph.wrong_index(v_start) or graph.wrong_index(v_end):
         print("Invalid index")
