@@ -1,5 +1,3 @@
-
-
 class Graph:
     """
     Main class that holds a graph and all its vertices.

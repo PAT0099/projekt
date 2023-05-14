@@ -1,4 +1,4 @@
-from graphmanager import Graph
+from gm.graphmanager import Graph
 from math import sin, pi
 
 def add_complete(g: Graph, n: int, weight: float, x: float = 0.5, y: float = 0.5, radius: float = 0.4, angle: float = 0):

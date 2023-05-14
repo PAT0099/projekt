@@ -1,4 +1,4 @@
-from graphmanager import Graph
+from gm.graphmanager import Graph
 
 def bfs(graph: Graph, v_start: int, v_end: int) -> tuple:
     """
