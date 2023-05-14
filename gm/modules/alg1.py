@@ -6,7 +6,7 @@ def bfs(graph: Graph, v_start: int, v_end: int) -> tuple:
     Returns a tuple consisting of a bool, float and list.\n
     The bool is `True` if there exists a path between given vertices.
     The float is the length of found path.
-    The list shows the order of vertices in found path
+    The list shows the order of vertices in found path.
     """
     if graph.wrong_index(v_start) or graph.wrong_index(v_end):
         print("Invalid index")
